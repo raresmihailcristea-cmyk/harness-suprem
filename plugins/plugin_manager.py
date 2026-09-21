@@ -343,8 +343,62 @@ class WorktreeFanoutPlugin(SupremePlugin):
 
     def merge_winner(self, repo_path: str, winner_id: str) -> bool:
         from core.orchestration.worktree_fanout import WorktreeFanoutManager
-        mgr = WorktreeFanoutManager(repo_root=repo_path)
-        return mgr.select_and_merge_winner(winner_id)
+# -------------------------------------------------------------
+# 8. System 1 Non-Autoregressive Decisions & Routing (Laya)
+# -------------------------------------------------------------
+class LayaFastRouterPlugin(SupremePlugin):
+    def __init__(self):
+        super().__init__(
+            "laya-fast-router",
+            "Non-autoregressive System 1 sub-35ms routing, prompt guardrails, and tool shortlisting (nandhakishorm/laya)",
+            "system"
+        )
+
+    def route(self, prompt: str) -> Dict[str, Any]:
+        from core.system1 import get_system1_engine
+        engine = get_system1_engine()
+        dec = engine.route_task(prompt)
+        return {
+            "target_tier": dec.target_tier,
+            "recommended_model": dec.recommended_model,
+            "confidence": dec.confidence,
+            "complexity_score": dec.complexity_score,
+            "latency_ms": dec.latency_ms,
+            "language": dec.language,
+            "script": dec.script,
+            "reason": dec.reason
+        }
+
+    def guard(self, prompt: str) -> Dict[str, Any]:
+        from core.system1 import get_system1_engine
+        engine = get_system1_engine()
+        verdict = engine.guard_prompt(prompt)
+        return {
+            "is_safe": verdict.is_safe,
+            "risk_score": verdict.risk_score,
+            "verdict": verdict.verdict,
+            "flags": verdict.flags,
+            "latency_ms": verdict.latency_ms,
+            "reason": verdict.reason
+        }
+
+    def shortlist_tools(self, prompt: str, tools: List[Dict[str, Any]], k: int = 6) -> List[Dict[str, Any]]:
+        from core.system1 import get_system1_engine
+        engine = get_system1_engine()
+        return engine.shortlist_tools(prompt, tools, k=k)
+
+    def evaluate_decision(self, state: Any, question_schema: Dict[str, Any]) -> Dict[str, Any]:
+        from core.system1 import get_system1_engine
+        engine = get_system1_engine()
+        res = engine.evaluate_typed_decision(state, question_schema)
+        return {
+            "primitive": res.primitive,
+            "result": res.result,
+            "confidence": res.confidence,
+            "distribution": res.distribution,
+            "latency_ms": res.latency_ms,
+            "reason": res.reason
+        }
 
 
 # -------------------------------------------------------------
@@ -364,6 +418,7 @@ ALL_PLUGINS = [
     GeolocationPlugin(),
     GitingestPlugin(),
     GitMCPPlugin(),
+    LayaFastRouterPlugin(),
     LinuxNodePlugin(),
     MemoryCorePlugin(),
     MonetizationIntelPlugin(),
