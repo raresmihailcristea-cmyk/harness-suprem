@@ -32,6 +32,12 @@ from .system1 import (
     GuardVerdict,
     get_system1_engine,
 )
+from .expo import (
+    ExpoManager,
+    ExpoProjectConfig,
+    ExpoDevSession,
+    ExpoDoctorReport,
+)
 
 __all__ = [
     "ActionNormalizer",
@@ -73,4 +79,8 @@ __all__ = [
     "RoutingDecision",
     "GuardVerdict",
     "get_system1_engine",
+    "ExpoManager",
+    "ExpoProjectConfig",
+    "ExpoDevSession",
+    "ExpoDoctorReport",
 ]

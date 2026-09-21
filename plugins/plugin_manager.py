@@ -402,6 +402,71 @@ class LayaFastRouterPlugin(SupremePlugin):
 
 
 # -------------------------------------------------------------
+# 9. Universal Mobile Platform & App Scaffolding (Expo / expo)
+# -------------------------------------------------------------
+class ExpoUniversalPlugin(SupremePlugin):
+    def __init__(self):
+        super().__init__(
+            "expo-universal-mobile",
+            "Universal Mobile application platform, declarative Config Plugins, EAS dual-store build/submit and live QR Expo Go preview (expo/expo)",
+            "platform"
+        )
+
+    def detect_project(self, path: str = ".") -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        return ExpoManager.detect_project(path)
+
+    def scaffold_app(
+        self,
+        target_dir: str,
+        name: str,
+        bundle_id: Optional[str] = None,
+        package_name: Optional[str] = None,
+        template: str = "tabs"
+    ) -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        return ExpoManager.scaffold_universal_app(
+            target_dir=target_dir,
+            name=name,
+            bundle_id=bundle_id,
+            package_name=package_name,
+            template=template
+        )
+
+    def apply_plugin(self, project_dir: str, plugin_name: str, plugin_options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        return ExpoManager.apply_config_plugin(project_dir, plugin_name, plugin_options=plugin_options)
+
+    def generate_eas(self, project_dir: str, apple_team_id: Optional[str] = "FD7Q764N23") -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        return ExpoManager.generate_eas_config(project_dir, apple_team_id=apple_team_id)
+
+    def get_dev_session(self, project_dir: str = ".", port: int = 8081, tunnel: bool = False) -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        sess = ExpoManager.get_dev_session(project_dir, port=port, tunnel=tunnel)
+        return {
+            "url": sess.url,
+            "exp_url": sess.exp_url,
+            "qr_ascii": sess.qr_ascii,
+            "port": sess.port,
+            "host_ip": sess.host_ip,
+            "deep_link": sess.deep_link
+        }
+
+    def doctor(self, project_dir: str = ".") -> Dict[str, Any]:
+        from core.expo import ExpoManager
+        rep = ExpoManager.run_doctor_audit(project_dir)
+        return {
+            "is_healthy": rep.is_healthy,
+            "sdk_version": rep.sdk_version,
+            "warnings": rep.warnings,
+            "errors": rep.errors,
+            "recommendations": rep.recommendations,
+            "details": rep.details
+        }
+
+
+# -------------------------------------------------------------
 # Central Registry
 # -------------------------------------------------------------
 ALL_PLUGINS = [
@@ -414,6 +479,7 @@ ALL_PLUGINS = [
     CUAComputerPlugin(),
     DevicePairPlugin(),
     ECCWorkflowPlugin(),
+    ExpoUniversalPlugin(),
     FileTransferPlugin(),
     GeolocationPlugin(),
     GitingestPlugin(),
