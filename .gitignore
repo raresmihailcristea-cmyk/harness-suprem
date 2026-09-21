@@ -1,0 +1,33 @@
+# Compiled artifacts & caches
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Swift / Xcode build caches
+.build/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+DerivedData/
+
+# Private keys and secrets
+*.p8
+*.pem
+*.key
+*.cer
+*.mobileprovision
+.env
+.env.local
+
+# Virtual environments
+.venv/
+venv/
+ENV/

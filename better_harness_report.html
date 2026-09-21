@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better Harness Audit Report - AUDIT-1789898495</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .overall-score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #f59e0b;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .dimension-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dimension-score {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .progress-bar-bg {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .dimension-question {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        details.evidence-drawer summary {
+            cursor: pointer;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+        .drawer-content {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .check-item {
+            background: rgba(0,0,0,0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .check-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .state-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .check-summary {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .evidence-trace {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        .findings-section h2 {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .finding-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 6px solid #f59e0b;
+        }
+        .severity-high { border-left-color: #ef4444; }
+        .severity-medium { border-left-color: #f59e0b; }
+        .finding-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .finding-id {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .ai-fix code {
+            display: block;
+            background: rgba(0,0,0,0.3);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            color: #38bdf8;
+        }
+        .no-findings {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: #10b981;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <div>
+                    <h1>Better Harness Work Loop Audit</h1>
+                    <p style="color: var(--text-secondary); margin: 0;">Task Episode: <strong>EPISODE-LATEST</strong> | Timestamp: 2026-09-20 13:01:35</p>
+                </div>
+            </div>
+            <div class="overall-score">
+                76.0%
+            </div>
+        </header>
+
+        <section>
+            <h2>The Five Agent Work Loop Dimensions</h2>
+            <div class="dimensions-grid">
+                
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <h3>Task Understanding</h3>
+                    <span class="dimension-score" style="color: #10b981;">83.3%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 83.3%; background-color: #10b981;"></div>
+                </div>
+                <p class="dimension-question">Does the agent understand intended outcome, relevant context, and scope boundary?</p>
+                <details class="evidence-drawer">
+                    <summary>View Evidence Drawer (3 Checks)</summary>
+                    <div class="drawer-content">
+                        
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Intent and Acceptance</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">User intent and goal specified clearly</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Goal: Implement and verify enterprise features...</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Relevant Context</span>
+                        <span class="state-badge" style="background-color: #3b82f6;">Wired</span>
+                    </div>
+                    <div class="check-summary">Context provided in user prompt stream</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> 1 prompt turns recorded</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Scope Boundary</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">Scope kept within focused diff bounds</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Diff size: 1 lines</div>
+                </div>
+                
+                    </div>
+                </details>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <h3>Controlled Execution</h3>
+                    <span class="dimension-score" style="color: #f59e0b;">76.7%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 76.7%; background-color: #f59e0b;"></div>
+                </div>
+                <p class="dimension-question">Can the agent start and operate through supported routes within enforced boundaries?</p>
+                <details class="evidence-drawer">
+                    <summary>View Evidence Drawer (3 Checks)</summary>
+                    <div class="drawer-content">
+                        
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Reproducible Startup</span>
+                        <span class="state-badge" style="background-color: #6b7280;">Present</span>
+                    </div>
+                    <div class="check-summary">Container startup driven by apex-wrapper.sh and Scion manifest</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> apex-wrapper.sh runtime wrapper verified</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Supported Operation</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">Executed 1 verified tool calls</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> 1 tool calls observed</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Permission Boundary</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">All actions respected sandbox and security policy</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> init-firewall.sh active | No unauthorized egress</div>
+                </div>
+                
+                    </div>
+                </details>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <h3>Change Validation</h3>
+                    <span class="dimension-score" style="color: #10b981;">93.3%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 93.3%; background-color: #10b981;"></div>
+                </div>
+                <p class="dimension-question">Does the agent run relevant verification, diagnose failures, and revalidate?</p>
+                <details class="evidence-drawer">
+                    <summary>View Evidence Drawer (3 Checks)</summary>
+                    <div class="drawer-content">
+                        
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Relevant Verification</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">Automated tests executed against changes</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Test passed: True</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Failure Diagnosis and Repair</span>
+                        <span class="state-badge" style="background-color: #059669;">Outcome-supported</span>
+                    </div>
+                    <div class="check-summary">Diagnosis and repair verified by tests</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> No direct trace</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Post-repair Revalidation</span>
+                        <span class="state-badge" style="background-color: #10b981;">Exercised</span>
+                    </div>
+                    <div class="check-summary">Final clean test suite revalidation observed</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> No direct trace</div>
+                </div>
+                
+                    </div>
+                </details>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <h3>Reliable Delivery</h3>
+                    <span class="dimension-score" style="color: #f59e0b;">73.3%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 73.3%; background-color: #f59e0b;"></div>
+                </div>
+                <p class="dimension-question">Is result accepted at delivery boundary with rollback path?</p>
+                <details class="evidence-drawer">
+                    <summary>View Evidence Drawer (3 Checks)</summary>
+                    <div class="drawer-content">
+                        
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Delivery Acceptance</span>
+                        <span class="state-badge" style="background-color: #059669;">Outcome-supported</span>
+                    </div>
+                    <div class="check-summary">Work verified and committed to git</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Commits: 1</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">High-risk Approval</span>
+                        <span class="state-badge" style="background-color: #3b82f6;">Wired</span>
+                    </div>
+                    <div class="check-summary">LoopGate gatekeepers active for dangerous actions</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Gate policy configured</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Rollback or Recovery</span>
+                        <span class="state-badge" style="background-color: #6b7280;">Present</span>
+                    </div>
+                    <div class="check-summary">Git worktree rollback safety available via VeRO CandidateRepo</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> VeRO worktree rollback engine ready</div>
+                </div>
+                
+                    </div>
+                </details>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <h3>Learning Capture</h3>
+                    <span class="dimension-score" style="color: #ef4444;">53.3%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 53.3%; background-color: #ef4444;"></div>
+                </div>
+                <p class="dimension-question">Does the harness detect recurring patterns and turn lessons into improvements?</p>
+                <details class="evidence-drawer">
+                    <summary>View Evidence Drawer (3 Checks)</summary>
+                    <div class="drawer-content">
+                        
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Lifecycle Opportunity Detection</span>
+                        <span class="state-badge" style="background-color: #3b82f6;">Wired</span>
+                    </div>
+                    <div class="check-summary">Error and friction pattern detection wired in learning capture</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> No direct trace</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Loop Engineering</span>
+                        <span class="state-badge" style="background-color: #6b7280;">Present</span>
+                    </div>
+                    <div class="check-summary">Learning capture updates to .supreme/AGENTS.md enabled</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> Learning capture module available</div>
+                </div>
+                
+                <div class="check-item">
+                    <div class="check-header">
+                        <span class="check-name">Longitudinal Validation</span>
+                        <span class="state-badge" style="background-color: #9ca3af;">Unobserved</span>
+                    </div>
+                    <div class="check-summary">Requires multiple historical task episodes to validate long-term trends</div>
+                    <div class="evidence-trace"><strong>Trace:</strong> No direct trace</div>
+                </div>
+                
+                    </div>
+                </details>
+            </div>
+            
+            </div>
+        </section>
+
+        <section class="findings-section">
+            <h2>Prioritized Findings & Scoped AI Repairs (0)</h2>
+            <div class="findings-container">
+                <div class='no-findings'>✅ No blocking workflow defects detected. Agent loop executed within parameters.</div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

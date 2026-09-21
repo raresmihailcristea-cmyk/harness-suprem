@@ -1,0 +1,5 @@
+# Markdown Code Patch grammar for llama.cpp GBNF
+root ::= header body footer
+header ::= "```" ("swift" | "python" | "bash" | "json") "\n"
+body   ::= [^\`]*
+footer ::= "\n```\n"

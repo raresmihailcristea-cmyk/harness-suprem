@@ -1,0 +1,314 @@
+# Copyright 2026 Scion Frontiers & Antigravity
+# Unified Event Dialect for Supreme Harness + VeRO Optimization Engine
+# Staged to $HOME/.scion/harness/dialect.yaml at agent start.
+
+dialect: supreme
+
+event_name_fields:
+  - hook_event_name
+  - hookEventName
+  - type
+  - event
+
+mappings:
+  # Session lifecycle
+  SessionStart:
+    event: session-start
+    fields:
+      session_id: session_id
+  session-start:
+    event: session-start
+  session.created:
+    event: session-start
+    fields:
+      session_id: session_id
+
+  SessionEnd:
+    event: session-end
+    fields:
+      reason: reason
+  session-end:
+    event: session-end
+  session.error:
+    event: session-end
+    fields:
+      error: error
+      reason: reason
+
+  # Prompt lifecycle
+  UserPromptSubmit:
+    event: prompt-submit
+    fields:
+      prompt: prompt
+      session_id: session_id
+  userPromptSubmitted:
+    event: prompt-submit
+    fields:
+      prompt: prompt
+      session_id: session_id
+  prompt-submit:
+    event: prompt-submit
+
+  # Tool execution lifecycle
+  PreToolUse:
+    event: tool-start
+    fields:
+      tool_name: tool_name
+      tool_input: tool_input
+      session_id: session_id
+  BeforeTool:
+    event: tool-start
+    fields:
+      tool_name: tool_name
+      tool_input: tool_input
+  tool-start:
+    event: tool-start
+  tool.execute.before:
+    event: tool-start
+    fields:
+      tool_name: tool_name
+      tool_input: tool_input
+
+  PostToolUse:
+    event: tool-end
+    fields:
+      tool_name: tool_name
+      tool_output: tool_output
+      success: success
+      error: error
+      session_id: session_id
+  AfterTool:
+    event: tool-end
+    fields:
+      tool_name: tool_name
+      tool_output: tool_output
+      success: success
+      error: error
+  tool-end:
+    event: tool-end
+  tool.execute.after:
+    event: tool-end
+    fields:
+      tool_name: tool_name
+      tool_output: tool_output
+      success: success
+      error: error
+
+  # Model invocation & token metering (Fine-grained FinOps from Muse + DeepSeek R1 reasoning)
+  PreInvocation:
+    event: model-start
+    fields:
+      session_id: session_id
+  BeforeModel:
+    event: model-start
+  PreLLMCall:
+    event: model-start
+  model-start:
+    event: model-start
+
+  PostInvocation:
+    event: model-end
+    fields:
+      session_id: session_id
+      input_tokens: input_tokens
+      output_tokens: output_tokens
+      cached_tokens: cached_tokens
+      reasoning_tokens: reasoning_tokens
+  AfterModel:
+    event: model-end
+    fields:
+      input_tokens: input_tokens
+      output_tokens: output_tokens
+      cached_tokens: cached_tokens
+      reasoning_tokens: reasoning_tokens
+  PostLLMCall:
+    event: model-end
+    fields:
+      input_tokens: input_tokens
+      output_tokens: output_tokens
+      cached_tokens: cached_tokens
+      reasoning_tokens: reasoning_tokens
+  model-end:
+    event: model-end
+
+  # VeRO Optimization Engine Lifecycle Events
+  CandidatePropose:
+    event: candidate-propose
+    fields:
+      candidate_id: candidate_id
+      round: round
+  CandidateEvaluate:
+    event: candidate-evaluate
+    fields:
+      candidate_id: candidate_id
+      score: pareto_score
+      accuracy: accuracy
+      latency_ms: latency_ms
+  CandidateSelect:
+    event: candidate-select
+    fields:
+      candidate_id: candidate_id
+      score: pareto_score
+  CandidateRollback:
+    event: candidate-rollback
+    fields:
+      candidate_id: candidate_id
+      reason: reason
+  BudgetExceeded:
+    event: budget-exceeded
+    fields:
+      scope: scope
+      tokens: total_tokens
+      usd: total_usd
+
+  # Harness-Coder 1.3.3 Resilience Events
+  model_retry:
+    event: model-retry
+    fields:
+      attempt: attempt
+      max_retries: max_retries
+      error: error
+
+  # LoopGate Quality Gate Events
+  GatePassed:
+    event: gate-passed
+    fields:
+      mutation_score: mutation_score
+      duration_ms: duration_ms
+  GateFailed:
+    event: gate-failed
+    fields:
+      diagnostics: diagnostics
+
+  # Skeptical Evaluator Events
+  SkepticVerdict:
+    event: skeptic-verdict
+    fields:
+      verdict: verdict
+      score: score
+      risk: risk_assessment
+
+  # Context Compaction events (from Grok)
+  PreCompact:
+    event: compact-start
+    fields:
+      source: source
+  PostCompact:
+    event: compact-end
+    fields:
+      source: source
+
+  # Subagent orchestration
+  SubagentStart:
+    event: subagent-start
+  SubagentStop:
+    event: subagent-end
+  subagentStop:
+    event: subagent-end
+
+  # Turn and Agent Completion
+  agent-turn-complete:
+    event: response-complete
+    fields:
+      message: message
+      assistant_text: assistant_text
+  Stop:
+    event: agent-end
+    fields:
+      reason: reason
+      error: error
+  agentStop:
+    event: agent-end
+  session.idle:
+    event: agent-end
+
+  # Notifications and permissions
+  Notification:
+    event: notification
+    fields:
+      message: message
+  PermissionDenied:
+    event: permission-denied
+    fields:
+      tool_name: tool_name
+      tool_input: tool_input
+
+  # Work Loop & Better Harness Auditing (Evidence-based governance)
+  AuditCompleted:
+    event: audit-completed
+    fields:
+      score: overall_score
+      verdict: verdict
+      episode_id: episode_id
+  audit.completed:
+    event: audit-completed
+    fields:
+      score: overall_score
+      verdict: verdict
+      episode_id: episode_id
+  EvidenceObserved:
+    event: evidence-observed
+    fields:
+      check_id: check_id
+      state: state
+      dimension: dimension
+  evidence.observed:
+    event: evidence-observed
+    fields:
+      check_id: check_id
+      state: state
+      dimension: dimension
+  LearningCaptured:
+    event: learning-captured
+    fields:
+      action_item: action_item
+      category: category
+      target_file: target_file
+  learning.captured:
+    event: learning-captured
+    fields:
+      action_item: action_item
+      category: category
+      target_file: target_file
+
+  # Apple Ecosystem & Platform Events
+  XcodeBuildCompleted:
+    event: apple-build-completed
+    fields:
+      success: success
+      duration: duration_sec
+  apple.build.completed:
+    event: apple-build-completed
+    fields:
+      success: success
+      duration: duration_sec
+  SimDeviceBooted:
+    event: sim-device-booted
+    fields:
+      udid: udid
+      runtime: runtime
+  sim.device.booted:
+    event: sim-device-booted
+    fields:
+      udid: udid
+      runtime: runtime
+  NotarizationChecked:
+    event: notarization-checked
+    fields:
+      status: status
+      submission_id: submission_id
+  notarization.checked:
+    event: notarization-checked
+    fields:
+      status: status
+      submission_id: submission_id
+  HIGAuditCompleted:
+    event: hig-audit-completed
+    fields:
+      score: score
+      issues_count: issues_count
+  hig.audit.completed:
+    event: hig-audit-completed
+    fields:
+      score: score
+      issues_count: issues_count

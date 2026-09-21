@@ -1,0 +1,193 @@
+# Copyright 2026 Scion Frontiers & Antigravity
+# Supreme Hybrid Coding Harness with 16 Built-in System Plugins + VeRO Optimization Engine
+
+harness: supreme
+image: scion-supreme:latest
+user: scion
+
+env:
+  SCION_AUTO_EXPOSE_PORTS: "true"
+  SCION_AUTO_EXPOSE_MODE: "allowlist"
+  SCION_AUTO_EXPOSE_PORTS_LIST: "8080,9119,9120"
+  GEMINI_CLI_NO_RELAUNCH: "true"
+  NO_COLOR: "1"
+  CI: "1"
+
+provisioner:
+  type: container-script
+  interface_version: 1
+  lib: vendored
+  command: ["python3", "/home/scion/.scion/harness/provision.py"]
+  timeout: 45s
+  lifecycle_events:
+    - pre-start
+  required_image_tools:
+    - python3
+    - jq
+    - ripgrep
+    - git
+
+config_dir: .supreme
+skills_dir: .supreme/skills
+plugins_dir: .supreme/plugins
+interrupt_key: C-c
+instructions_file: .supreme/AGENTS.md
+system_prompt_file: .supreme/system-prompt.md
+system_prompt_mode: native
+
+model_aliases:
+  small: deepseek-ai/deepseek-v3
+  medium: anthropic/claude-sonnet-4
+  large: deepseek-ai/deepseek-r1
+  extra-large: anthropic/claude-opus-4
+
+command:
+  base: ["/home/scion/.scion/harness/apex-wrapper.sh", "--yolo", "--dangerously-skip-permissions"]
+  resume_flag: "--continue"
+  task_flag: "--prompt"
+  task_position: after_base_args
+  system_prompt_flag: "--system-prompt"
+
+capabilities:
+  limits:
+    max_turns: { support: "yes" }
+    max_model_calls: { support: "yes" }
+    max_duration: { support: "yes" }
+  telemetry:
+    enabled: { support: "yes" }
+    native_emitter: { support: "yes" }
+  prompts:
+    system_prompt: { support: "yes" }
+    agent_instructions: { support: "yes" }
+  auth:
+    api_key: { support: "yes" }
+    auth_file: { support: "yes" }
+    oauth_token: { support: "yes" }
+    vertex_ai: { support: "yes" }
+  mcp:
+    stdio: { support: "yes" }
+    sse: { support: "yes" }
+    streamable_http: { support: "yes" }
+    project_scope: { support: "no", reason: "Entries safely demoted and merged into global MCP namespace" }
+  resume: { support: "yes" }
+  optimization:
+    engine: "vero"
+    version_control: "git-worktree"
+    evaluation_sidecar_port: 9120
+    hill_climbing: { support: "yes" }
+    conformance_testing: { support: "yes" }
+  resilience:
+    action_normalizer: { support: "yes", standard: "harness-coder-1.3.3" }
+    retry_engine: { support: "yes", capped_exponential_backoff: "yes" }
+  quality_gates:
+    pre_commit_gate: { support: "yes", engine: "loopgate" }
+    mutation_testing: { support: "yes" }
+  skeptical_evaluation:
+    independent_session: { support: "yes" }
+    structured_json_state: { support: "yes" }
+  enterprise_governance:
+    ci_cd_synthesis: { support: "yes", provider: "harness-mcp-v2" }
+    cost_estimation: { support: "yes" }
+  better_harness_audit:
+    dimensions: 5
+    checks: 15
+    evidence_states: 7
+    html_inspector: { support: "yes" }
+    learning_capture: { support: "yes" }
+  security_governance:
+    secret_scrubber: { support: "yes", engine: "shannon_entropy+regex" }
+    injection_defense: { support: "yes", mode: "preflight_blocking" }
+    tool_governor: { support: "yes", destructive_command_interception: "yes" }
+  tdd_discipline:
+    enforce_test_pairing: { support: "yes", source: "oh-my-copilot" }
+    consensus_engine: { support: "yes", personas: ["Architect", "SecurityAuditor", "TestLead"] }
+  crash_safe_storage:
+    event_log: { support: "yes", engine: "brat-gritee", integrity: "sha256" }
+    concurrency_locking: { support: "yes" }
+  stateful_evidence:
+    evidence_graph: { support: "yes", source: "harness-1" }
+    contradiction_detection: { support: "yes" }
+  meta_evolution:
+    self_patching: { support: "yes", source: "harness-r1" }
+    evolver_integration: { support: "yes", engine: "vero-pareto" }
+  apple_ecosystem:
+    swift_version: "6.4"
+    xcode_build: { support: "yes", strict_concurrency: "complete" }
+    simulator_manager: { support: "yes", engine: "xcrun-simctl" }
+    notarization: { support: "yes", engine: "notarytool" }
+    swift_testing: { support: "yes", modern_macros: "yes" }
+    hig_accessibility_audit: { support: "yes", dynamic_type_check: "yes" }
+
+no_auth:
+  behavior: drop-to-shell
+  command: /home/scion/.scion/harness/apex-wrapper.sh --login
+  message: |
+    Supreme Harness started without active credentials.
+    1. Run interactive auth: /home/scion/.scion/harness/apex-wrapper.sh --login
+    2. Then capture credentials: python3 /home/scion/.scion/harness/capture_auth.py
+
+auth:
+  default_type: api-key
+  types:
+    api-key:
+      required_env:
+        - any_of:
+            - "DEEPSEEK_API_KEY"
+            - "ANTHROPIC_API_KEY"
+            - "OPENAI_API_KEY"
+            - "GEMINI_API_KEY"
+            - "GOOGLE_API_KEY"
+            - "XAI_API_KEY"
+            - "NVIDIA_API_KEY"
+    oauth-token:
+      required_files:
+        - name: SUPREME_TOKEN
+          type: file
+          description: "OAuth token credentials file for Supreme agent runtime"
+          target_suffix: "/.supreme/oauth_token.json"
+          field: SupremeTokenFile
+    auth-file:
+      required_files:
+        - name: SUPREME_AUTH
+          type: file
+          description: "Custom authentication JSON file"
+          target_suffix: "/.supreme/auth.json"
+          field: SupremeAuthFile
+    vertex-ai:
+      required_env:
+        - any_of: ["GOOGLE_CLOUD_PROJECT", "VERTEX_PROJECT_ID"]
+        - any_of: ["GOOGLE_CLOUD_REGION", "GOOGLE_CLOUD_LOCATION", "VERTEX_LOCATION"]
+      required_files:
+        - name: gcloud-adc
+          type: file
+          description: "Google Cloud Application Default Credentials (ADC) file for Vertex AI / Model Garden"
+          field: GoogleAppCredentials
+          target_suffix: "/.config/gcloud/application_default_credentials.json"
+          alternative_env_keys: ["GOOGLE_APPLICATION_CREDENTIALS"]
+          skipped_when_gcp_service_account_assigned: true
+          required: true
+  autodetect:
+    env:
+      DEEPSEEK_API_KEY: api-key
+      ANTHROPIC_API_KEY: api-key
+      OPENAI_API_KEY: api-key
+      GEMINI_API_KEY: api-key
+      GOOGLE_API_KEY: api-key
+      XAI_API_KEY: api-key
+      NVIDIA_API_KEY: api-key
+      GOOGLE_APPLICATION_CREDENTIALS: vertex-ai
+      GOOGLE_CLOUD_PROJECT: vertex-ai
+      VERTEX_PROJECT_ID: vertex-ai
+    files:
+      SUPREME_TOKEN: oauth-token
+      SUPREME_AUTH: auth-file
+      gcloud-adc: vertex-ai
+
+mcp:
+  global_config_file: .supreme/mcp_config.json
+  global_config_path: mcpServers
+  transport_field: type
+  transport_map:
+    stdio: stdio
+    sse: sse
+    streamable-http: streamable-http
