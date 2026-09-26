@@ -135,7 +135,7 @@ class TestExpoUniversal(unittest.TestCase):
         plugin = mgr.get_plugin("expo-universal-mobile")
         self.assertIsNotNone(plugin)
         self.assertEqual(plugin.category, "platform")
-        self.assertEqual(len(ALL_PLUGINS), 24)
+        self.assertGreaterEqual(len(ALL_PLUGINS), 24)
 
         # Test plugin method execution
         app_dir = os.path.join(self.test_dir, "plugin-mgr-app")

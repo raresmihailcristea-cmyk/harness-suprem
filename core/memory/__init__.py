@@ -4,5 +4,12 @@
 
 from .mempalace import MemPalaceBridge
 from .context_autoreset import ContextAutoResetter
+from .engram_bridge import EngramBridge, EngramObservation, EngramSessionSummary
 
-__all__ = ["MemPalaceBridge", "ContextAutoResetter"]
+__all__ = [
+    "MemPalaceBridge",
+    "ContextAutoResetter",
+    "EngramBridge",
+    "EngramObservation",
+    "EngramSessionSummary",
+]

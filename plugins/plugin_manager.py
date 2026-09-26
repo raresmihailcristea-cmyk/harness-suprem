@@ -467,6 +467,103 @@ class ExpoUniversalPlugin(SupremePlugin):
 
 
 # -------------------------------------------------------------
+# 10. Persistent Project Memory & ODD Workflow (Engram / Gentle-AI)
+# -------------------------------------------------------------
+class EngramMemoryPlugin(SupremePlugin):
+    def __init__(self):
+        super().__init__(
+            "engram-memory",
+            "Persistent project memory (SQLite+FTS5), topic-key deduplication, session handoff summaries, and Organic-Driven Development (Gentleman-Programming/engram & gentle-ai)",
+            "memory"
+        )
+
+    def save(
+        self,
+        title: str,
+        content: str,
+        type: str = "decision",
+        topic_key: Optional[str] = None,
+        project: Optional[str] = None,
+        scope: str = "project",
+        cwd: Optional[str] = None
+    ) -> Dict[str, Any]:
+        from core.memory import EngramBridge
+        return EngramBridge.save_observation(
+            title=title,
+            content=content,
+            type=type,
+            topic_key=topic_key,
+            project=project,
+            scope=scope,
+            cwd=cwd
+        )
+
+    def search(
+        self,
+        query: str,
+        project: Optional[str] = None,
+        all_projects: bool = False,
+        limit: int = 10,
+        type_filter: Optional[str] = None,
+        cwd: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        from core.memory import EngramBridge
+        return EngramBridge.search_memory(
+            query=query,
+            project=project,
+            all_projects=all_projects,
+            limit=limit,
+            type_filter=type_filter,
+            cwd=cwd
+        )
+
+    def save_summary(
+        self,
+        goal: str,
+        instructions: str = "",
+        discoveries: Optional[List[str]] = None,
+        accomplished: Optional[List[str]] = None,
+        next_steps: Optional[List[str]] = None,
+        relevant_files: Optional[List[str]] = None,
+        project: Optional[str] = None,
+        cwd: Optional[str] = None
+    ) -> Dict[str, Any]:
+        from core.memory import EngramBridge, EngramSessionSummary
+        summary = EngramSessionSummary(
+            goal=goal,
+            instructions=instructions,
+            discoveries=discoveries or [],
+            accomplished=accomplished or [],
+            next_steps=next_steps or [],
+            relevant_files=relevant_files or []
+        )
+        return EngramBridge.save_session_summary(summary, project=project, cwd=cwd)
+
+    def get_context(self, project: Optional[str] = None, cwd: Optional[str] = None) -> str:
+        from core.memory import EngramBridge
+        return EngramBridge.get_context(project=project, cwd=cwd)
+
+    def odd_classify(self, prompt: str) -> Dict[str, Any]:
+        from core.gates import ODDWorkflowEngine
+        scope, reason, score = ODDWorkflowEngine.classify_scope(prompt)
+        return {
+            "scope": scope.value,
+            "reason": reason,
+            "score": score
+        }
+
+    def odd_feature(
+        self,
+        feature_name: str,
+        goal: str,
+        project_dir: str = "."
+    ) -> Dict[str, Any]:
+        from core.gates import ODDWorkflowEngine
+        rec = ODDWorkflowEngine.create_or_resume_feature(feature_name, goal, project_dir=project_dir)
+        return rec.__dict__
+
+
+# -------------------------------------------------------------
 # Central Registry
 # -------------------------------------------------------------
 ALL_PLUGINS = [
@@ -479,6 +576,7 @@ ALL_PLUGINS = [
     CUAComputerPlugin(),
     DevicePairPlugin(),
     ECCWorkflowPlugin(),
+    EngramMemoryPlugin(),
     ExpoUniversalPlugin(),
     FileTransferPlugin(),
     GeolocationPlugin(),

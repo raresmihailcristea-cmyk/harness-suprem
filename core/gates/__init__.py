@@ -1,6 +1,7 @@
 from .quality_gate import QualityGateRunner, GateResult
 from .tdd_enforcer import TDDEnforcer
 from .consensus import ConsensusEngine, ConsensusDecision, ConsensusStatus, PersonaVote
+from .odd_workflow import ODDWorkflowEngine, ODDTaskScope, ODDFeatureRecord
 
 __all__ = [
     "QualityGateRunner",
@@ -10,4 +11,7 @@ __all__ = [
     "ConsensusDecision",
     "ConsensusStatus",
     "PersonaVote",
+    "ODDWorkflowEngine",
+    "ODDTaskScope",
+    "ODDFeatureRecord",
 ]

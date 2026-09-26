@@ -38,6 +38,16 @@ from .expo import (
     ExpoDevSession,
     ExpoDoctorReport,
 )
+from .memory import (
+    EngramBridge,
+    EngramObservation,
+    EngramSessionSummary,
+)
+from .gates import (
+    ODDWorkflowEngine,
+    ODDTaskScope,
+    ODDFeatureRecord,
+)
 
 __all__ = [
     "ActionNormalizer",
@@ -83,4 +93,10 @@ __all__ = [
     "ExpoProjectConfig",
     "ExpoDevSession",
     "ExpoDoctorReport",
+    "EngramBridge",
+    "EngramObservation",
+    "EngramSessionSummary",
+    "ODDWorkflowEngine",
+    "ODDTaskScope",
+    "ODDFeatureRecord",
 ]
